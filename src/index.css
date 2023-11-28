@@ -67,3 +67,41 @@ input {
 .chakra-button {
   padding: 10px;
 }
+
+.chakra-button {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 30px;
+  font-weight: 900;
+  color: #fff;
+  padding: 20px 60px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.chakra-button:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2em;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-4em) skewX(-45deg);
+}
+
+.chakra-button:hover:before {
+  animation: moveLight 0.6s;
+}
+
+@keyframes moveLight {
+  from {
+    transform: translateX(-4em) skewX(-45deg);
+  }
+
+  to {
+    transform: translateX(10em) skewX(-45deg);
+  }
+}
