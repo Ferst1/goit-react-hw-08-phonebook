@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { register } from '../../redux/auth/operations';
 import { Button } from '@chakra-ui/react';
 
@@ -9,14 +9,15 @@ const RegisterForm = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const registrationError = useSelector(state => state.auth.error);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setError(null);
-    dispatch(register({ name, email, password })).unwrap().catch((err) => {
-      setError(err);
-    });
+    dispatch(register({ name, email, password }))
+      .unwrap()
+      .catch((err) => {
+        setError(err);
+      });
   };
 
   return (
