@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Item } from './Contact.styled';
 import { useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/operations';
+import { deleteContact } from '../../redux/auth/operations';  
 import { Button } from '@chakra-ui/react';
 
 export function Contact({ contact }) {
@@ -30,5 +30,5 @@ Contact.propTypes = {
   contact: PropTypes.shape({
     name: PropTypes.string.isRequired,
     number: PropTypes.string.isRequired,
-  }),
+  }).isRequired,
 };

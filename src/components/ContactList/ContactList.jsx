@@ -1,7 +1,7 @@
-import { Contact } from 'components/Contact/Contact';
+import { Contact } from '../../components/Contact/Contact';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchContacts } from 'redux/operations';
+import { fetchContacts } from '../../redux/auth/operations';
 import { Item } from 'components/Contact/Contact.styled';
 import { useContacts } from 'hooks/useContacts';
 

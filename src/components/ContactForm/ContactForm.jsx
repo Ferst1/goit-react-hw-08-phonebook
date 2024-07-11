@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form } from './ContactForm.styled';
 import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/operations';
+import { addContact } from '../../redux/auth/operations';
 import { useContacts } from 'hooks/useContacts';
 import { Button } from '@chakra-ui/react';
 

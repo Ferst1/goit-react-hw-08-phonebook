@@ -1,68 +1,55 @@
-import { Button } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { register } from 'redux/auth/operations';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../../redux/auth/operations';
+import { Button } from '@chakra-ui/react';
 
 const RegisterForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const registrationError = useSelector(state => state.auth.error);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    dispatch(
-      register({
-        name: form.elements.name.value,
-        email: form.elements.email.value,
-        password: form.elements.password.value,
-      })
-    );
-    setName('');
-    setEmail('');
-    setPassword('');
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setError(null);
+    dispatch(register({ name, email, password })).unwrap().catch((err) => {
+      setError(err);
+    });
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Username
+        Name:
         <input
-          type="name"
-          name="name"
+          type="text"
           value={name}
+          onChange={(e) => setName(e.target.value)}
           required
-          placeholder="Enter your name"
-          onChange={e => setName(e.target.value)}
         />
       </label>
       <label>
-        Email
+        Email:
         <input
           type="email"
-          name="email"
           value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder="Enter your email"
-          onChange={e => setEmail(e.target.value)}
         />
       </label>
       <label>
-        Password
+        Password:
         <input
           type="password"
-          name="password"
           value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
-          placeholder="Enter your password"
-          onChange={e => setPassword(e.target.value)}
         />
       </label>
-      <Button colorScheme="blue" size="md" type="submit" mt="12px">
-        Sign Up
-      </Button>
+      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      <Button type="submit">Register</Button>
     </form>
   );
 };
