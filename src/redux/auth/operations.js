@@ -4,7 +4,7 @@ import Notiflix from 'notiflix';
 
 axios.defaults.baseURL = 'https://connections-api.herokuapp.com/';
 
-const setAuthHeader = (token) => {
+const setAuthHeader = token => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
@@ -22,7 +22,10 @@ export const register = createAsyncThunk(
       Notiflix.Notify.success('Registration success! :)');
       return response.data;
     } catch (error) {
-      console.error('Registration error:', error.response?.data || error.message); // Логирование ошибки
+      console.error(
+        'Registration error:',
+        error.response?.data || error.message
+      ); // Логирование ошибки
       Notiflix.Notify.failure('Registration failed. Please try again.');
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -45,7 +48,9 @@ export const logIn = createAsyncThunk(
       return response.data;
     } catch (error) {
       Notiflix.Notify.failure('Login failed. Please try again.');
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -57,7 +62,9 @@ export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
     clearAuthHeader();
   } catch (error) {
     Notiflix.Notify.failure('Logout failed. Please try again.');
-    return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+    return thunkAPI.rejectWithValue(
+      error.response?.data?.message || error.message
+    );
   }
 });
 
@@ -77,7 +84,9 @@ export const refreshUser = createAsyncThunk(
       return res.data;
     } catch (error) {
       Notiflix.Notify.failure('Failed to refresh user. Please try again.');
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
