@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRegisterMutation } from 'services/authApi';
@@ -20,7 +21,7 @@ const RegisterForm = () => {
       localStorage.setItem('token', userData.token);
       Notiflix.Notify.success('Registration success!');
     } catch (error) {
-      Notiflix.Notify.failure(error?.data?.error || 'Registration failed. Please try again.');
+      Notiflix.Notify.failure(error?.data?.message || 'Registration failed. Please try again.');
     }
   };
 

@@ -1,11 +1,12 @@
 
+
 import { createSlice } from '@reduxjs/toolkit';
-import { register, logIn, logOut, refreshUser } from './operations';
+import { authApi } from '../../services/authApi';
 
 const initialState = {
   user: { name: null, email: null },
-  token: localStorage.getItem('token') || null,
-  isLoggedIn: !!localStorage.getItem('token'),
+  token: null,
+  isLoggedIn: false,
   isRefreshing: false,
   isLoading: false,
 };
@@ -26,55 +27,24 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(register.pending, state => {
-        state.isLoading = true;
-      })
-      .addCase(register.fulfilled, (state, action) => {
+      .addMatcher(authApi.endpoints.register.matchFulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
-        state.isLoading = false;
       })
-      .addCase(register.rejected, (state) => {
-        state.isLoading = false;
-      })
-      .addCase(logIn.pending, state => {
-        state.isLoading = true;
-      })
-      .addCase(logIn.fulfilled, (state, action) => {
+      .addMatcher(authApi.endpoints.logIn.matchFulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
-        state.isLoading = false;
       })
-      .addCase(logIn.rejected, state => {
-        state.isLoading = false;
-      })
-      .addCase(logOut.pending, state => {
-        state.isLoading = true;
-      })
-      .addCase(logOut.fulfilled, state => {
+      .addMatcher(authApi.endpoints.logOut.matchFulfilled, (state) => {
         state.user = { name: null, email: null };
         state.token = null;
         state.isLoggedIn = false;
-        state.isLoading = false;
       })
-      .addCase(logOut.rejected, state => {
-        state.isLoading = false;
-      })
-      .addCase(refreshUser.pending, state => {
-        state.isRefreshing = true;
-        state.isLoading = true;
-      })
-      .addCase(refreshUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+      .addMatcher(authApi.endpoints.refreshUser.matchFulfilled, (state, action) => {
+        state.user = action.payload.user;
         state.isLoggedIn = true;
-        state.isRefreshing = false;
-        state.isLoading = false;
-      })
-      .addCase(refreshUser.rejected, state => {
-        state.isRefreshing = false;
-        state.isLoading = false;
       });
   },
 });

@@ -12,15 +12,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const mongoUri = process.env.MONGODB_URI;
-if (!mongoUri) {
-  console.error("Error: MONGODB_URI is not defined in .env file");
-  process.exit(1);
-}
-
-mongoose.connect(mongoUri, {
-  tlsAllowInvalidCertificates: true,
-}).then(() => {
+mongoose.connect(process.env.MONGODB_URI).then(() => {
   console.log("Connected to MongoDB");
 }).catch((error) => {
   console.error("Error connecting to MongoDB", error);

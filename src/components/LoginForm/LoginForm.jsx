@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLogInMutation } from 'services/authApi';
@@ -19,7 +20,7 @@ const LoginForm = () => {
       localStorage.setItem('token', userData.token);
       Notiflix.Notify.success('Login success!');
     } catch (error) {
-      Notiflix.Notify.failure(error?.data?.error || 'Login failed. Please try again.');
+      Notiflix.Notify.failure(error?.data?.message || 'Login failed. Please try again.');
     }
   };
 
@@ -49,5 +50,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-

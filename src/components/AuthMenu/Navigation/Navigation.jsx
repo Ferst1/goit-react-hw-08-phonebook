@@ -1,13 +1,13 @@
-import AuthMenu from 'components/AuthMenu/AuthMenu';
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header, HeaderNavLink } from './Navigation.styled';
 import { useAuth } from 'hooks/useAuth';
 import { UserMenu } from 'components/UserMenu/UserMenu';
+import AuthMenu from 'components/AuthMenu/AuthMenu';
 import { Loader } from 'components/Loader/Loader';
 
 const Navigation = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   return (
     <Header>
       <header>

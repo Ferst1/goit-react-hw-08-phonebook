@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:5000/api',
   prepareHeaders: (headers, { getState }) => {
-    const token = getState().auth.token || localStorage.getItem('token'); // Получаем токен из состояния или localStorage
+    const token = getState().auth.token || localStorage.getItem('token'); 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }

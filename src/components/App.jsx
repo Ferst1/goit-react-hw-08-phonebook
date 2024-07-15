@@ -1,5 +1,6 @@
 
-import React, { useEffect } from 'react';
+
+import React, { useEffect, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useRefreshUserQuery } from 'services/authApi';
@@ -9,7 +10,6 @@ import Navigation from './Navigation/Navigation';
 import { RestrictedRoute } from './RestrictedRoute';
 import { PrivateRoute } from './PrivateRoute';
 import { Loader } from './Loader/Loader';
-import { lazy } from 'react';
 
 const Home = lazy(() => import('../pages/Home/Home'));
 const Contacts = lazy(() => import('../pages/Contacts/Contacts'));
@@ -28,23 +28,11 @@ export const App = () => {
     }
   }, [dispatch]);
 
-  const { data, isFetching } = useRefreshUserQuery(null, {
+  useRefreshUserQuery(null, {
     skip: !token,
   });
 
-  useEffect(() => {
-    if (data) {
-      dispatch(setAuthToken(data.token));
-    }
-  }, [data, dispatch]);
-
-  useEffect(() => {
-    if (!token) {
-      dispatch(clearAuthToken());
-    }
-  }, [token, dispatch]);
-
-  if (isFetching || isRefreshing) {
+  if (isRefreshing) {
     return <Loader />;
   }
 
