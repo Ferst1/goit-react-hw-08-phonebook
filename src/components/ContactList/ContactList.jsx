@@ -1,25 +1,33 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Contact } from '../../components/Contact/Contact';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchContacts } from '../../redux/auth/operations';
 import { Item } from 'components/Contact/Contact.styled';
-import { useContacts } from 'hooks/useContacts';
+import { useFetchContactsQuery } from 'services/contactsApi';
+import { selectFilter } from 'redux/selectors';
+import { Loader } from 'components/Loader/Loader';
 
 export function ContactList() {
-  const dispatch = useDispatch();
-  const { visibleContacts } = useContacts();
+  const filter = useSelector(selectFilter);
+  const { data: contacts, error, isLoading, refetch } = useFetchContactsQuery();
 
-  useEffect(() => {
-    dispatch(fetchContacts('/contacts'));
-  }, [dispatch]);
+  const getVisibleContacts = (contacts, filter) => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  const visibleContacts = contacts ? getVisibleContacts(contacts, filter) : [];
+
+  if (isLoading) return <Loader />;
+  if (error) return <p>Error loading contacts: {error.message}</p>;
 
   return (
     <ul>
       {visibleContacts.length === 0 && <Item>No contacts for your search</Item>}
       {visibleContacts.length > 0 &&
-        visibleContacts.map(item => {
-          return <Contact key={item.id} contact={item} id={item.id} />;
-        })}
+        visibleContacts.map(item => (
+          <Contact key={item._id} contact={item} refetchContacts={refetch} />
+        ))}
     </ul>
   );
 }

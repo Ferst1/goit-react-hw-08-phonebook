@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { register } from '../../redux/auth/operations';
+import { useRegisterMutation } from 'services/authApi';
+import { setAuthToken } from 'redux/auth/slice';
 import { Button } from '@chakra-ui/react';
+import Notiflix from 'notiflix';
 
 const RegisterForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const [register] = useRegisterMutation();
   const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setError(null);
-    dispatch(register({ name, email, password }))
-      .unwrap()
-      .catch((err) => {
-        setError(err);
-      });
+    try {
+      const userData = await register({ name, email, password }).unwrap();
+      dispatch(setAuthToken(userData.token));
+      localStorage.setItem('token', userData.token);
+      Notiflix.Notify.success('Registration success!');
+    } catch (error) {
+      Notiflix.Notify.failure(error?.data?.error || 'Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -49,7 +53,6 @@ const RegisterForm = () => {
           required
         />
       </label>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <Button type="submit">Register</Button>
     </form>
   );

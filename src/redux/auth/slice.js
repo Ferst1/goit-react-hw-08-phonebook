@@ -1,10 +1,11 @@
+
 import { createSlice } from '@reduxjs/toolkit';
 import { register, logIn, logOut, refreshUser } from './operations';
 
 const initialState = {
   user: { name: null, email: null },
-  token: null,
-  isLoggedIn: false,
+  token: localStorage.getItem('token') || null,
+  isLoggedIn: !!localStorage.getItem('token'),
   isRefreshing: false,
   isLoading: false,
 };
@@ -12,7 +13,17 @@ const initialState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    setAuthToken(state, action) {
+      state.token = action.payload;
+      state.isLoggedIn = true;
+    },
+    clearAuthToken(state) {
+      state.token = null;
+      state.isLoggedIn = false;
+      state.user = { name: null, email: null };
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(register.pending, state => {
@@ -24,7 +35,7 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.isLoading = false;
       })
-      .addCase(register.rejected, (state, payload) => {
+      .addCase(register.rejected, (state) => {
         state.isLoading = false;
       })
       .addCase(logIn.pending, state => {
@@ -68,4 +79,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { setAuthToken, clearAuthToken } = authSlice.actions;
 export const authReducer = authSlice.reducer;

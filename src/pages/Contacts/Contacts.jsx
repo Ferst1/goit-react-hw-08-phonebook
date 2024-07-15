@@ -3,13 +3,12 @@ import { ContactForm } from 'components/ContactForm/ContactForm';
 import { ContactList } from 'components/ContactList/ContactList';
 import { Filter } from 'components/Filter/Filter';
 import { Loader } from 'components/Loader/Loader';
-import { useSelector } from 'react-redux';
-import { selectError, selectIsLoading } from 'redux/selectors';
+import { useFetchContactsQuery } from 'services/contactsApi';
 import { ContactDiv } from './Contacts.styled';
 
 const Contacts = () => {
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
+  const { data: contacts, error, isLoading } = useFetchContactsQuery();
+
   return (
     <ContactDiv>
       <h1>Phonebook</h1>
@@ -17,9 +16,9 @@ const Contacts = () => {
       <ContactForm />
       <h2>Contacts</h2>
       <Filter />
-      {error && <b>Error: {error}</b>}
+      {error && <b>Error: {error.message}</b>}
       {isLoading && <Loader />}
-      <ContactList />
+      {contacts && <ContactList />}
     </ContactDiv>
   );
 };

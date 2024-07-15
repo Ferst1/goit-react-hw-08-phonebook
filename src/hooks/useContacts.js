@@ -15,3 +15,4 @@ export const useContacts = () => {
   const visibleContacts = useSelector(selectVisibleContacts);
   return { contacts, error, isLoading, filter, visibleContacts };
 };
+

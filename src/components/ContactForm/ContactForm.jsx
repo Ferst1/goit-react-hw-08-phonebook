@@ -1,17 +1,18 @@
+
+
 import React, { useState } from 'react';
 import { Form } from './ContactForm.styled';
-import { useDispatch } from 'react-redux';
-import { addContact } from '../../redux/auth/operations';
-import { useContacts } from 'hooks/useContacts';
+import { useAddContactMutation, useFetchContactsQuery } from '../../services/contactsApi';
 import { Button } from '@chakra-ui/react';
+import Notiflix from 'notiflix';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const contacts = useContacts();
-  const dispatch = useDispatch();
+  const { data: contacts, refetch } = useFetchContactsQuery();
+  const [addContact, { isLoading }] = useAddContactMutation();
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const searchResult = Array.isArray(contacts)
       ? contacts.find(
@@ -20,13 +21,19 @@ export const ContactForm = () => {
       : null;
 
     if (searchResult) {
-      alert(`${name} is already in contacts`);
+      Notiflix.Notify.failure(`${name} is already in contacts`);
       return false;
     }
 
-    dispatch(addContact({ name, number }));
-    setName('');
-    setNumber('');
+    try {
+      await addContact({ name, number }).unwrap();
+      Notiflix.Notify.success('Contact added successfully');
+      setName('');
+      setNumber('');
+      refetch(); // Обновление списка контактов
+    } catch (error) {
+      Notiflix.Notify.failure('Failed to add contact. Please try again.');
+    }
   };
 
   return (
@@ -49,7 +56,7 @@ export const ContactForm = () => {
         required
         onChange={e => setNumber(e.target.value)}
       />
-      <Button colorScheme="blue" size="sm" type="submit">
+      <Button colorScheme="blue" size="sm" type="submit" isLoading={isLoading}>
         Add contact
       </Button>
     </Form>

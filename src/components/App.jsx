@@ -1,12 +1,15 @@
-import React, { lazy, useEffect } from 'react';
+
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useRefreshUserQuery } from 'services/authApi';
+import { setAuthToken, clearAuthToken } from 'redux/auth/slice';
+import { useAuth } from 'hooks/useAuth';
 import Navigation from './Navigation/Navigation';
 import { RestrictedRoute } from './RestrictedRoute';
 import { PrivateRoute } from './PrivateRoute';
-import { useDispatch } from 'react-redux';
-import { useAuth } from 'hooks/useAuth';
-import { refreshUser } from 'redux/auth/operations';
 import { Loader } from './Loader/Loader';
+import { lazy } from 'react';
 
 const Home = lazy(() => import('../pages/Home/Home'));
 const Contacts = lazy(() => import('../pages/Contacts/Contacts'));
@@ -16,14 +19,36 @@ const NotFound = lazy(() => import('../pages/NotFound/NotFound'));
 
 export const App = () => {
   const dispatch = useDispatch();
-  const { isRefreshing } = useAuth();
+  const { token, isRefreshing } = useAuth();
 
   useEffect(() => {
-    dispatch(refreshUser());
+    const tokenFromStorage = localStorage.getItem('token');
+    if (tokenFromStorage) {
+      dispatch(setAuthToken(tokenFromStorage));
+    }
   }, [dispatch]);
-  return isRefreshing ? (
-    <Loader />
-  ) : (
+
+  const { data, isFetching } = useRefreshUserQuery(null, {
+    skip: !token,
+  });
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setAuthToken(data.token));
+    }
+  }, [data, dispatch]);
+
+  useEffect(() => {
+    if (!token) {
+      dispatch(clearAuthToken());
+    }
+  }, [token, dispatch]);
+
+  if (isFetching || isRefreshing) {
+    return <Loader />;
+  }
+
+  return (
     <Routes>
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />} />
