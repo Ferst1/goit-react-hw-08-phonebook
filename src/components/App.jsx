@@ -4,7 +4,7 @@ import React, { useEffect, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useRefreshUserQuery } from 'services/authApi';
-import { setAuthToken, clearAuthToken } from 'redux/auth/slice';
+import { setAuthToken} from 'redux/auth/slice';
 import { useAuth } from 'hooks/useAuth';
 import Navigation from './Navigation/Navigation';
 import { RestrictedRoute } from './RestrictedRoute';
